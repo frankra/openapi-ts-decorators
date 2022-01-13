@@ -12,9 +12,22 @@ describe('OpenAPI Generator', () => {
                 version: 'v1.0'
             },
             paths: {
-                '/api/v1': pathFactory({
+                '/api/v1': pathFactory<UserPayload>({
                     method: 'post',
                     body: UserPayload,
+                    example: {
+                        id: 123,
+                        name: 'test',
+                        age: 20,
+                        photo: {
+                            id: 1,
+                            data: ''
+                        },
+                        posts: [{
+                            id: 123,
+                            text: '123'
+                        }]
+                    },
                     responses: {
                         400: {
                             description: "Invalid ID supplied",
@@ -39,6 +52,21 @@ describe('OpenAPI Generator', () => {
                                 "application/json": {
                                     "schema": {
                                         "$ref": "#/components/schemas/User"
+                                    },
+                                    "example": {
+                                        "id": 123,
+                                        "name": "test",
+                                        "age": 20,
+                                        "photo": {
+                                            "id": 1,
+                                            "data": ""
+                                        },
+                                        "posts": [
+                                            {
+                                                "id": 123,
+                                                "text": "123"
+                                            }
+                                        ]
                                     }
                                 }
                             },

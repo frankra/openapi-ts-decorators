@@ -26,14 +26,15 @@ function evaluatePaths(document: OpenAPIV3Doc, paths: OpenAPIV3.PathsObject | Pa
     return document;
 }
 
-export interface BuildOpenAPIPathParams {
+export interface BuildOpenAPIPathParams<T> {
     method: string,
     body: Function,
     description?: string,
-    responses: any
+    responses?: any,
+    example?: T
 }
 
-export function pathFactory(params: BuildOpenAPIPathParams): (document: OpenAPIV3Doc) => OpenAPIV3.PathItemObject {
+export function pathFactory<T = any>(params: BuildOpenAPIPathParams<T>): (document: OpenAPIV3Doc) => OpenAPIV3.PathItemObject {
     return (document: OpenAPIV3Doc) => {
         const object = getMetadata()[params.body.name];
         if (object) {
@@ -48,7 +49,8 @@ export function pathFactory(params: BuildOpenAPIPathParams): (document: OpenAPIV
                             'application/json': {
                                 schema: {
                                     '$ref': `#/components/schemas/${object.name}`
-                                }
+                                },
+                                example: params.example
                             }
                         },
                         required: true
