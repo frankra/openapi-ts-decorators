@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "lib": [
+            "ES2021"
+        ],
+        "types": [
+            "reflect-metadata",
+            "node",
+            "mocha"
+        ],
+        "target": "ES2021",
+        "moduleResolution": "node",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "noImplicitAny": true,
+        "sourceMap": true,
+        "watch": false,
+        "downlevelIteration": true,
+        "strict": true
+    },
+    "exclude": [
+        "node_modules"
+    ]
+}
