@@ -152,18 +152,3 @@ function convertObjectProperties(document: any, object: MetadataObject<any>) {
         return {};
     }
 }
-
-// "description": "Pet object that needs to be added to the store",
-// "content": {
-//   "application/json": {
-//     "schema": {
-//       "$ref": "#/components/schemas/Pet"
-//     }
-//   },
-//   "application/xml": {
-//     "schema": {
-//       "$ref": "#/components/schemas/Pet"
-//     }
-//   }
-// },
-// "required": true
