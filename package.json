@@ -1,12 +1,13 @@
 {
     "name": "openapi-ts-decorators",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Typescript Decorators for generation of Open API JSON",
     "main": "index.js",
     "scripts": {
         "test": "mocha test/**/*.spec.js --timeout 30000 --exit",
         "clean": "find lib test -name '*.js' -delete",
-        "tsc": "npm run clean && tsc --watch false"
+        "tsc": "npm run clean && tsc --watch false",
+        "postinstall": "npm run tsc"
     },
     "repository": {
         "type": "git",
