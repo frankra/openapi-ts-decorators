@@ -2,16 +2,19 @@
     "compilerOptions": {
         "module": "commonjs",
         "lib": [
-            "ES2021"
+            "es5",
+            "es6"
         ],
         "types": [
             "reflect-metadata",
             "node",
             "mocha"
         ],
-        "target": "ES2021",
+        "target": "es5",
+        "esModuleInterop": true,
         "moduleResolution": "node",
         "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
         "emitDecoratorMetadata": true,
         "noImplicitAny": true,
         "sourceMap": true,

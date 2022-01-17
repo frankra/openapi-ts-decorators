@@ -1,61 +1,31 @@
-import { getMetadata } from "../lib/metadata"
 import { expect } from "chai";
-import { UserPayload } from "./fixture/types";
+import { getMetadata } from "../lib/metadata";
 
-describe('OpenAPI Decorators', ()=>{
-    it('should map decorated classes', ()=>{
+describe('OpenAPI Decorators', () => {
+    it('should map decorated classes', () => {
         const metadata = getMetadata();
 
         expect(JSON.stringify(metadata, null, 4)).to.be.deep.eq(JSON.stringify({
-            "PostPayload": {
-                "properties": {
-                    "id": {
-                        "key": "id",
-                        "name": "id",
-                        "format": "int32",
-                        "type": "number"
-                    },
-                    "text": {
-                        "key": "text",
-                        "name": "text",
-                        "format": "string",
-                        "type": "string"
-                    }
-                },
-                "key": "PostPayload",
-                "name": "Post",
-                "type": "schema"
-            },
-            "PhotoPayload": {
-                "properties": {
-                    "id": {
-                        "key": "id",
-                        "name": "id",
-                        "format": "int32",
-                        "type": "number"
-                    },
-                    "data": {
-                        "key": "data",
-                        "name": "data",
-                        "format": "binary",
-                        "type": "string"
-                    }
-                },
-                "key": "PhotoPayload",
-                "name": "Photo",
-                "type": "schema"
-            },
             "UserPayload": {
                 "properties": {
                     "id": {
                         "key": "id",
                         "name": "id",
+                        "required": true,
                         "format": "int32",
                         "type": "number"
                     },
                     "name": {
                         "key": "name",
                         "name": "name",
+                        "required": true,
+                        "format": "string",
+                        "type": "string"
+                    },
+                    "email": {
+                        "key": "email",
+                        "name": "email",
+                        "required": true,
                         "format": "string",
                         "type": "string"
                     },
@@ -80,6 +50,67 @@ describe('OpenAPI Decorators', ()=>{
                 },
                 "key": "UserPayload",
                 "name": "User",
+                "type": "schema"
+            },
+            "PostPayload": {
+                "properties": {
+                    "id": {
+                        "key": "id",
+                        "name": "id",
+                        "required": true,
+                        "description": "Post Unique Identifier",
+                        "format": "int32",
+                        "type": "number"
+                    },
+                    "text": {
+                        "key": "text",
+                        "name": "text",
+                        "required": true,
+                        "description": "Post Content",
+                        "format": "string",
+                        "type": "string"
+                    },
+                    "author": {
+                        "key": "author",
+                        "name": "author",
+                        "required": true,
+                        "description": "User who created the post",
+                        "type": "relation",
+                        "relationType": "object"
+                    }
+                },
+                "key": "PostPayload",
+                "name": "Post",
+                "type": "schema"
+            },
+            "PhotoPayload": {
+                "properties": {
+                    "id": {
+                        "key": "id",
+                        "name": "id",
+                        "required": true,
+                        "description": "Photo Unique Identifier",
+                        "format": "int32",
+                        "type": "number"
+                    },
+                    "data": {
+                        "key": "data",
+                        "name": "data",
+                        "required": true,
+                        "format": "binary",
+                        "type": "string"
+                    },
+                    "owner": {
+                        "key": "owner",
+                        "name": "owner",
+                        "required": true,
+                        "description": "User who the Photo belongs to",
+                        "type": "relation",
+                        "relationType": "object"
+                    }
+                },
+                "key": "PhotoPayload",
+                "name": "Photo",
                 "type": "schema"
             }
         }, null, 4));

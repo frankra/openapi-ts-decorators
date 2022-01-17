@@ -5,11 +5,13 @@ export type PropertyDecorator = (target: any, propertyKey: string, descriptor: P
 
 
 export interface PropertyDecoratorParams {
-    description?: string
+    description?: string,
+    required?: boolean,
 }
 
 export interface ObjectDecoratorParams {
-    name?: string
+    name?: string,
+    description?: string,
 }
 
 export module OpenAPI {
@@ -53,11 +55,11 @@ export module OpenAPI {
     }
 
     // Relations
-    export function OneToOne(relationTo: ()=> Function, params: PropertyDecoratorParams = {}): Function {
+    export function OneToOne(relationTo: (ref: any) => Function, params: PropertyDecoratorParams = {}): Function {
         return getMapPropertyRelation('object', relationTo, params);
     }
 
-    export function OneToMany(relationTo: ()=> Function, params: PropertyDecoratorParams = {}): Function {
+    export function OneToMany(relationTo: (ref: any) => Function, params: PropertyDecoratorParams = {}): Function {
         return getMapPropertyRelation('array', relationTo, params);
     }
 
@@ -107,5 +109,5 @@ export module OpenAPI {
             })
         }
     }
-   
+
 }
