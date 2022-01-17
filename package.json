@@ -3,6 +3,7 @@
     "version": "1.0.2",
     "description": "Typescript Decorators for generation of Open API JSON",
     "main": "index.js",
+    "types": "index.ts",
     "scripts": {
         "test": "mocha test/**/*.spec.js --timeout 30000 --exit",
         "clean": "find lib test -name '*.js' -delete",
