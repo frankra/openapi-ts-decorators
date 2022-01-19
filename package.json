@@ -1,6 +1,6 @@
 {
     "name": "openapi-ts-decorators",
-    "version": "1.0.3",
+    "version": "1.0.5",
     "description": "Typescript Decorators for generation of Open API JSON",
     "main": "index.js",
     "types": "index.ts",
