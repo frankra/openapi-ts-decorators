@@ -6,7 +6,27 @@ describe('OpenAPI Decorators', () => {
         const metadata = getMetadata();
 
         expect(JSON.stringify(metadata, null, 4)).to.be.deep.eq(JSON.stringify({
+            "EntityMetadata": {
+                "key": "EntityMetadata",
+                "name": "EntityMetadata",
+                "properties": {
+                    "createdAt": {
+                        "key": "createdAt",
+                        "name": "createdAt",
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "createdBy": {
+                        "key": "createdBy",
+                        "name": "createdBy",
+                        "format": "int32",
+                        "type": "number"
+                    }
+                }
+            },
             "UserPayload": {
+                "key": "UserPayload",
+                "name": "User",
                 "properties": {
                     "id": {
                         "key": "id",
@@ -48,11 +68,11 @@ describe('OpenAPI Decorators', () => {
                         "relationType": "array"
                     }
                 },
-                "key": "UserPayload",
-                "name": "User",
                 "type": "schema"
             },
             "PostPayload": {
+                "key": "PostPayload",
+                "name": "Post",
                 "properties": {
                     "id": {
                         "key": "id",
@@ -79,11 +99,11 @@ describe('OpenAPI Decorators', () => {
                         "relationType": "object"
                     }
                 },
-                "key": "PostPayload",
-                "name": "Post",
                 "type": "schema"
             },
             "PhotoPayload": {
+                "key": "PhotoPayload",
+                "name": "Photo",
                 "properties": {
                     "id": {
                         "key": "id",
@@ -109,8 +129,6 @@ describe('OpenAPI Decorators', () => {
                         "relationType": "object"
                     }
                 },
-                "key": "PhotoPayload",
-                "name": "Photo",
                 "type": "schema"
             }
         }, null, 4));

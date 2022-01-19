@@ -8,6 +8,7 @@ export interface MetadataObject<T = MetadataObjectType> {
     type: T,
     name: string,
     description?: string,
+    target: Function,
     properties: {
         [key: string]: MetadataObjectProperty
     }
@@ -55,20 +56,29 @@ export function getObjectByClass(clazz: Function): MetadataObject {
     return getObjectByKey(clazz.name);
 }
 
-export function mapObject(type: MetadataObjectType, data: { key: string, name?: string }) {
-    const node = metadata[data.key];
+export function mapObject(target: Function, type: MetadataObjectType, data: { name?: string }) {
+    const nodeKey = target.name;
+    const node = metadata[nodeKey];
+    
     if (node) {
-        metadata[data.key] = {
+        metadata[nodeKey] = {
             ...node,
             ...data,
-            type
+            type,
+            target
         }
     } else {
-        metadata[data.key] = { ...data, type, properties: {} };
+        metadata[nodeKey] = {
+            ...data,
+            type,
+            target,
+            properties: {}
+        };
     }
 }
 
-export function mapProperty(nodeKey: string, key: string, params: any) {
+export function mapProperty(target: Function, key: string, params: any) {
+    const nodeKey = target.name;
     const node = metadata[nodeKey];
     if (node) {
         node.properties = {
@@ -81,6 +91,9 @@ export function mapProperty(nodeKey: string, key: string, params: any) {
         }
     } else {
         metadata[nodeKey] = {
+            key: nodeKey,
+            name: nodeKey,
+            target,
             properties: {
                 [key]: {
                     key,

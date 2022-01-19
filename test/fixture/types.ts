@@ -1,8 +1,14 @@
 import { OpenAPI } from "../../lib/openapi.decorators"
 
 
+export class EntityMetadata {
+    @OpenAPI.DateTime()
+    createdAt!: Date;
+    @OpenAPI.Int32()
+    createdBy!: number;
+}
 @OpenAPI.Schema({ name: 'User' })
-export class UserPayload {
+export class UserPayload extends EntityMetadata {
     @OpenAPI.Int32({ required: true })
     id!: number;
     @OpenAPI.String({ required: true })
@@ -20,7 +26,7 @@ export class UserPayload {
 
 }
 @OpenAPI.Schema({ name: 'Post', description: 'User Post' })
-export class PostPayload {
+export class PostPayload extends EntityMetadata {
     @OpenAPI.Int32({ required: true, description: 'Post Unique Identifier' })
     id!: number;
     @OpenAPI.String({ required: true, description: 'Post Content' })
@@ -30,7 +36,7 @@ export class PostPayload {
 }
 
 @OpenAPI.Schema({ name: 'Photo', description: 'User Profile Picture' })
-export class PhotoPayload {
+export class PhotoPayload extends EntityMetadata {
     @OpenAPI.Int32({ required: true, description: 'Photo Unique Identifier' })
     id!: number;
     @OpenAPI.Binary({ required: true })

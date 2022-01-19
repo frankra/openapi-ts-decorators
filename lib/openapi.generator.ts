@@ -1,6 +1,6 @@
 import { OpenAPIV3 } from "openapi-types";
-import { getMetadata, getObjectByClass, Metadata, MetadataObject, MetadataObjectProperty } from "./metadata";
-import { CustomPathsObject, OpenAPIV3Doc, PathObjectFactory } from "./openapi.types";
+import { getObjectByClass, MetadataObject, MetadataObjectProperty } from "./metadata";
+import { OpenAPIV3Doc } from "./openapi.types";
 
 export function generateOpenAPISpec(apiDocJson: OpenAPIV3Doc): OpenAPIV3.Document {
     apiDocJson = bootstrap(apiDocJson);
@@ -113,7 +113,7 @@ function bootstrap(document: OpenAPIV3Doc): OpenAPIV3Doc {
 
 function maybeAddObjectToSchema(document: OpenAPIV3Doc, object: MetadataObject): OpenAPIV3Doc {
     const exists = document.components!.schemas![object.name]
-    if (!exists) {
+    if (!exists && object.type) {
         document = addObjectToDocumentSchema(document, object);
     }
     return document;
@@ -126,9 +126,12 @@ function addObjectToDocumentSchema(document: OpenAPIV3Doc, object: MetadataObjec
     const attributes = Object.keys(object).reduce((res: any, key) => {
         switch (key) {
             case 'properties':
+                const objectProperties = convertObjectProperties(document, object)
+                const allProperties = addInheritedProperties(document, objectProperties, object.target)
+                
                 return {
                     ...res,
-                    ...convertObjectProperties(document, object)
+                    ...allProperties
                 }
             default:
                 return res;
@@ -142,7 +145,28 @@ function addObjectToDocumentSchema(document: OpenAPIV3Doc, object: MetadataObjec
     return document;
 }
 
-function convertObjectProperties(document: OpenAPIV3Doc, object: MetadataObject) {
+function addInheritedProperties(document: OpenAPIV3Doc, props: PropertyMapAndRequiredArray, clazz: Function): PropertyMapAndRequiredArray {
+    let extendedPrototype = Object.getPrototypeOf(clazz);
+    let extendedObject = extendedPrototype.name ? getObjectByClass(extendedPrototype) : null;
+
+    if (extendedObject) {
+        const inherited = convertObjectProperties(document, extendedObject);
+        const newProps: PropertyMapAndRequiredArray = {
+            properties: {
+                ...inherited.properties,
+                ...props.properties
+            },
+            required: inherited.required.concat(props.required)
+        }
+        return addInheritedProperties(document, newProps, extendedPrototype)
+    } else {
+        return props;
+    }
+}
+
+type PropertyMapAndRequiredArray = { properties: any, required: string[] };
+
+function convertObjectProperties(document: OpenAPIV3Doc, object: MetadataObject): PropertyMapAndRequiredArray {
     const properties = object.properties;
     if (properties) {
         const required: string[] = [];
@@ -191,9 +215,12 @@ function convertObjectProperties(document: OpenAPIV3Doc, object: MetadataObject)
 
         return {
             properties: mappedProps,
-            required: required.length > 0 ? required : undefined
+            required
         }
     } else {
-        return {};
+        return {
+            properties: {},
+            required: []
+        };
     }
 }

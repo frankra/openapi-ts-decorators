@@ -1,3 +1,4 @@
+import { Func } from "mocha";
 import { mapObject, mapProperty, MetadataObjectType } from "./metadata";
 
 export type ClassDecorator = (constructor: Function) => void
@@ -77,8 +78,8 @@ export module OpenAPI {
     // }
 
     function getMapPropertyRelation(relationType: string, targetRelation: Function, params: PropertyDecoratorParams): Function {
-        return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
-            mapProperty(target.constructor.name, propertyKey, {
+        return (target: Function, propertyKey: string, descriptor: PropertyDescriptor) => {
+            mapProperty(target.constructor, propertyKey, {
                 ...params,
                 type: 'relation',
                 relationType,
@@ -88,8 +89,8 @@ export module OpenAPI {
     }
 
     function getMapPropertyAnnotation(type: string, format: string, params: PropertyDecoratorParams): Function {
-        return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
-            mapProperty(target.constructor.name, propertyKey, {
+        return (target: Function, propertyKey: string, descriptor: PropertyDescriptor) => {
+            mapProperty(target.constructor, propertyKey, {
                 ...params,
                 format,
                 type
@@ -103,8 +104,7 @@ export module OpenAPI {
 
     function getMapObjectAnnotation(type: MetadataObjectType, params: ObjectDecoratorParams): ClassDecorator {
         return (constructor: Function) => {
-            mapObject(type, {
-                key: constructor.name,
+            mapObject(constructor, type, {
                 name: params.name || constructor.name
             })
         }

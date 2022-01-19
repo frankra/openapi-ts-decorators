@@ -180,6 +180,14 @@ describe('OpenAPI Generator', () => {
                     "User": {
                         "type": "object",
                         "properties": {
+                            "createdAt": {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            "createdBy": {
+                                "type": "number",
+                                "format": "int32"
+                            },
                             "id": {
                                 "type": "number",
                                 "format": "int32"
@@ -216,6 +224,14 @@ describe('OpenAPI Generator', () => {
                     "Photo": {
                         "type": "object",
                         "properties": {
+                            "createdAt": {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            "createdBy": {
+                                "type": "number",
+                                "format": "int32"
+                            },
                             "id": {
                                 "description": "Photo Unique Identifier",
                                 "type": "number",
@@ -239,6 +255,14 @@ describe('OpenAPI Generator', () => {
                     "Post": {
                         "type": "object",
                         "properties": {
+                            "createdAt": {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            "createdBy": {
+                                "type": "number",
+                                "format": "int32"
+                            },
                             "id": {
                                 "description": "Post Unique Identifier",
                                 "type": "number",
