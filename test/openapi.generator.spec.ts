@@ -241,12 +241,10 @@ describe('OpenAPI Generator', () => {
                                 "format": "int32"
                             },
                             "name": {
-                                "type": "string",
-                                "format": "string"
+                                "type": "string"
                             },
                             "email": {
-                                "type": "string",
-                                "format": "string"
+                                "type": "string"
                             },
                             "age": {
                                 "type": "number",
@@ -318,8 +316,7 @@ describe('OpenAPI Generator', () => {
                             },
                             "text": {
                                 "description": "Post Content",
-                                "type": "string",
-                                "format": "string"
+                                "type": "string"
                             },
                             "author": {
                                 "type": "object",

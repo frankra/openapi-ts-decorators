@@ -7,7 +7,7 @@ describe('JSON Schema Generator', () => {
         const schema = generateJSONSchema();
 
         expect(JSON.stringify(schema, null, 4)).to.be.deep.eq(JSON.stringify({
-            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "$schema": "http://json-schema.org/draft-07/schema#",
             "definitions": {
                 "User": {
                     "type": "object",
@@ -25,12 +25,10 @@ describe('JSON Schema Generator', () => {
                             "format": "int32"
                         },
                         "name": {
-                            "type": "string",
-                            "format": "string"
+                            "type": "string"
                         },
                         "email": {
-                            "type": "string",
-                            "format": "string"
+                            "type": "string"
                         },
                         "age": {
                             "type": "number",
@@ -102,8 +100,7 @@ describe('JSON Schema Generator', () => {
                         },
                         "text": {
                             "description": "Post Content",
-                            "type": "string",
-                            "format": "string"
+                            "type": "string"
                         },
                         "author": {
                             "type": "object",

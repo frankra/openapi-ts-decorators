@@ -31,7 +31,7 @@ export module OpenAPI {
     }
     // String format
     export function String(params: PropertyDecoratorParams = {}): Function {
-        return getMapPropertyAnnotation('string', 'string', params);
+        return getMapPropertyAnnotation('string', undefined, params);
     }
     // Raw formats
     export function Byte(params: PropertyDecoratorParams = {}): Function {
@@ -42,7 +42,7 @@ export module OpenAPI {
     }
     // Boolean format
     export function Boolean(params: PropertyDecoratorParams = {}): Function {
-        return getMapPropertyAnnotation('boolean', 'boolean', params);
+        return getMapPropertyAnnotation('boolean', undefined, params);
     }
     // Date formats
     export function Date(params: PropertyDecoratorParams = {}): Function {
@@ -88,7 +88,7 @@ export module OpenAPI {
         };
     }
 
-    function getMapPropertyAnnotation(type: string, format: string, params: PropertyDecoratorParams): Function {
+    function getMapPropertyAnnotation(type: string, format: string | undefined, params: PropertyDecoratorParams): Function {
         return (target: Function, propertyKey: string, descriptor: PropertyDescriptor) => {
             mapProperty(target.constructor, propertyKey, {
                 ...params,

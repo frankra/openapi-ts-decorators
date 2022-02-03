@@ -3,9 +3,12 @@ import { getMetadata, getObjectByClass, MetadataObject, MetadataObjectProperty }
 
 const PATH_SPLITTER = '/';
 
-export function generateJSONSchema(path: string = "definitions"): any {
+export function generateJSONSchema(path: string = "definitions", bootstrap: any = {}): any {
     const metadata = getMetadata();
-    const schema = bootstrapSchema('definitions');
+    const schema = {
+        ...bootstrapSchema('definitions'),
+        ...bootstrap
+    }
 
     return Object.values(metadata).reduce((schema, object) => {
         return maybeAddObjectToSchema(schema, <MetadataObject>object, path)
@@ -15,7 +18,7 @@ export function generateJSONSchema(path: string = "definitions"): any {
 
 function bootstrapSchema(path: string) {
     return {
-        $schema: "https://json-schema.org/draft/2020-12/schema",
+        $schema: "http://json-schema.org/draft-07/schema#",
         [path]: {}
     }
 }

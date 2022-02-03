@@ -39,14 +39,12 @@ describe('OpenAPI Decorators', () => {
                         "key": "name",
                         "name": "name",
                         "required": true,
-                        "format": "string",
                         "type": "string"
                     },
                     "email": {
                         "key": "email",
                         "name": "email",
                         "required": true,
-                        "format": "string",
                         "type": "string"
                     },
                     "age": {
@@ -87,7 +85,6 @@ describe('OpenAPI Decorators', () => {
                         "name": "text",
                         "required": true,
                         "description": "Post Content",
-                        "format": "string",
                         "type": "string"
                     },
                     "author": {
