@@ -25,7 +25,9 @@ describe('JSON Schema Generator', () => {
                             "format": "int32"
                         },
                         "name": {
-                            "type": "string"
+                            "type": "string",
+                            "minLength": 10,
+                            "maxLength": 100,
                         },
                         "email": {
                             "type": "string"

@@ -146,7 +146,9 @@ function convertObjectProperties(schema: any, object: MetadataObject, path: stri
                 property = {
                     description: config.description,
                     type: config.type,
-                    format: config.format
+                    format: config.format,
+                    minLength: config.minLength,
+                    maxLength: config.maxLength
                 }
             }
 

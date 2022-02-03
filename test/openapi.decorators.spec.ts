@@ -39,6 +39,8 @@ describe('OpenAPI Decorators', () => {
                         "key": "name",
                         "name": "name",
                         "required": true,
+                        "minLength": 10,
+                        "maxLength": 100,
                         "type": "string"
                     },
                     "email": {

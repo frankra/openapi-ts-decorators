@@ -31,6 +31,8 @@ export interface MetadataObjectProperty {
     format?: string,
     targetRelation?: () => Function | Function[],
     required?: boolean,
+    minLength?: number,
+    maxLength?: number,
     relationType: MetadataObjectPropertyRelationType
 }
 

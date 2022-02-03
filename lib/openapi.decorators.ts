@@ -8,6 +8,8 @@ export type PropertyDecorator = (target: any, propertyKey: string, descriptor: P
 export interface PropertyDecoratorParams {
     description?: string,
     required?: boolean,
+    minLength?: number,
+    maxLength?: number,
 }
 
 export interface ObjectDecoratorParams {

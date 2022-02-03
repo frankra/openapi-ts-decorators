@@ -11,7 +11,7 @@ export class EntityMetadata {
 export class UserPayload extends EntityMetadata {
     @OpenAPI.Int32({ required: true })
     id!: number;
-    @OpenAPI.String({ required: true })
+    @OpenAPI.String({ required: true, minLength: 10, maxLength: 100 })
     name!: string
     @OpenAPI.String({ required: true })
     email!: string
