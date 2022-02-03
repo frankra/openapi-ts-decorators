@@ -1,9 +1,10 @@
 
 import { getMetadata, getObjectByClass, MetadataObject, MetadataObjectProperty } from "./metadata";
 
-export function generateJSONSchema(): any {
+const PATH_SPLITTER = '/';
+
+export function generateJSONSchema(path: string = "definitions"): any {
     const metadata = getMetadata();
-    const path = 'definitions';
     const schema = bootstrapSchema('definitions');
 
     return Object.values(metadata).reduce((schema, object) => {
@@ -19,8 +20,42 @@ function bootstrapSchema(path: string) {
     }
 }
 
-function maybeAddObjectToSchema(schema: any, object: MetadataObject, path: string): any {
-    const exists = schema[path][object.name]
+function getObjectAtPath(schema: any, path: string, objectName: string): any {
+    if (path.indexOf(PATH_SPLITTER) >= 0) {
+        const parts = path.split(PATH_SPLITTER)
+        const lastNode = findNodeDeep(schema, <string>parts.shift(), parts.join(PATH_SPLITTER));
+        return lastNode[objectName];
+    } else {
+        return schema[path][objectName];
+    }
+}
+
+function findNodeDeep(currentNode: any, currentPath: string, nextPath: string): any{
+    if (!currentNode || !currentPath) {
+        return null;
+    } else if (nextPath) {
+        const parts = nextPath.split(PATH_SPLITTER)
+        return findNodeDeep(currentNode[currentPath], <string>parts.shift(), parts.join(PATH_SPLITTER))
+    } else {
+        return currentNode[currentPath];
+    }
+}
+
+
+function placeObjectAtPath(schema: any, path: string, objectName: string, object: any): any {
+    if (path.indexOf(PATH_SPLITTER) >= 0) {
+        const parts = path.split(PATH_SPLITTER)
+        const lastNode = findNodeDeep(schema, <string>parts.shift(), parts.join(PATH_SPLITTER));
+        lastNode[objectName] = object;
+    } else {
+        schema[path][objectName] = object;
+    }
+    return object;
+}
+
+
+export function maybeAddObjectToSchema(schema: any, object: MetadataObject, path: string): any {
+    const exists = getObjectAtPath(schema, path, object.name)
     if (!exists && object.type) {
         schema = addObjectToSchema(schema, object, path);
     }
@@ -28,9 +63,9 @@ function maybeAddObjectToSchema(schema: any, object: MetadataObject, path: strin
 }
 
 function addObjectToSchema(schema: any, object: MetadataObject, path: string): any {
-    const newObject = schema[path][object.name] = {
+    const newObject = placeObjectAtPath(schema, path, object.name, {
         type: 'object'
-    }
+    })
     const attributes = Object.keys(object).reduce((res: any, key) => {
         switch (key) {
             case 'properties':
@@ -46,10 +81,10 @@ function addObjectToSchema(schema: any, object: MetadataObject, path: string): a
         }
     }, {})
 
-    schema[path][object.name] = {
+    placeObjectAtPath(schema, path, object.name, {
         ...newObject,
         ...attributes
-    }
+    })
     return schema;
 }
 

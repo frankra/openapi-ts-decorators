@@ -1,4 +1,5 @@
 import { OpenAPIV3 } from "openapi-types";
+import { maybeAddObjectToSchema } from "./jsonschema.generator";
 import { getObjectByClass, MetadataObject, MetadataObjectProperty } from "./metadata";
 import { OpenAPIV3Doc } from "./openapi.types";
 
@@ -60,7 +61,7 @@ export function buildRequestBody<T>(bodyClass: Function, params: {example?: T, i
     return (document: OpenAPIV3Doc) => {
         const object = getObjectByClass(bodyClass);
         if (object) {
-            maybeAddObjectToSchema(document, object);
+            maybeAddObjectToSchema(document, object, "components/schemas");
             return {
                 description: object.description,
                 content: buildContent(object, params),
@@ -77,13 +78,13 @@ export function buildResponseBody<T>(bodyClass: Function, params: Pick<OpenAPIV3
     return (document: OpenAPIV3Doc) => {
         const object = getObjectByClass(bodyClass);
         if (object) {
-            maybeAddObjectToSchema(document, object);
+            maybeAddObjectToSchema(document, object, "components/schemas");
             return {
                 content: buildContent(object, {
                     example: params.example,
                     isArray: params.isArray
                 }),
-                
+
                 headers: params.headers,
                 description: params.description,
                 links: params.links
@@ -134,118 +135,4 @@ function bootstrap(document: OpenAPIV3Doc): OpenAPIV3Doc {
     }
 
     return document;
-}
-
-function maybeAddObjectToSchema(document: OpenAPIV3Doc, object: MetadataObject): OpenAPIV3Doc {
-    const exists = document.components!.schemas![object.name]
-    if (!exists && object.type) {
-        document = addObjectToDocumentSchema(document, object);
-    }
-    return document;
-}
-
-function addObjectToDocumentSchema(document: OpenAPIV3Doc, object: MetadataObject): OpenAPIV3Doc {
-    const newObject = document.components!.schemas![object.name] = {
-        type: 'object'
-    }
-    const attributes = Object.keys(object).reduce((res: any, key) => {
-        switch (key) {
-            case 'properties':
-                const objectProperties = convertObjectProperties(document, object)
-                const allProperties = addInheritedProperties(document, objectProperties, object.target)
-                
-                return {
-                    ...res,
-                    ...allProperties
-                }
-            default:
-                return res;
-        }
-    }, {})
-
-    document.components!.schemas![object.name] = {
-        ...newObject,
-        ...attributes
-    }
-    return document;
-}
-
-function addInheritedProperties(document: OpenAPIV3Doc, props: PropertyMapAndRequiredArray, clazz: Function): PropertyMapAndRequiredArray {
-    let extendedPrototype = Object.getPrototypeOf(clazz);
-    let extendedObject = extendedPrototype.name ? getObjectByClass(extendedPrototype) : null;
-
-    if (extendedObject) {
-        const inherited = convertObjectProperties(document, extendedObject);
-        const newProps: PropertyMapAndRequiredArray = {
-            properties: {
-                ...inherited.properties,
-                ...props.properties
-            },
-            required: inherited.required.concat(props.required)
-        }
-        return addInheritedProperties(document, newProps, extendedPrototype)
-    } else {
-        return props;
-    }
-}
-
-type PropertyMapAndRequiredArray = { properties: any, required: string[] };
-
-function convertObjectProperties(document: OpenAPIV3Doc, object: MetadataObject): PropertyMapAndRequiredArray {
-    const properties = object.properties;
-    if (properties) {
-        const required: string[] = [];
-
-        const mappedProps = Object.keys(properties).reduce((props: any, key: string) => {
-            const config: MetadataObjectProperty = properties[key];
-            let property: any;
-            if (config.type === 'relation') {
-                let types = config.targetRelation!();
-                types = Array.isArray(types) ? types : [types];
-
-                const references = types.map((type: Function) => {
-                    const object = getObjectByClass(type)
-                    maybeAddObjectToSchema(document, object)
-                    return {
-                        $ref: `#/components/schemas/${object.name}`
-                    }
-                });
-
-                property = {
-                    type: config.relationType
-                }
-
-                if (config.relationType === 'array') {
-                    property.items = references.pop();
-                } else {
-                    property.$ref = references.pop()!.$ref;
-                }
-
-            } else {
-                property = {
-                    description: config.description,
-                    type: config.type,
-                    format: config.format
-                }
-            }
-
-            props[key] = property;
-            if (config.required) {
-                required.push(key);
-            }
-
-            return props;
-        }, {})
-
-
-        return {
-            properties: mappedProps,
-            required
-        }
-    } else {
-        return {
-            properties: {},
-            required: []
-        };
-    }
 }
