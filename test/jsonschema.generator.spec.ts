@@ -42,6 +42,7 @@ describe('JSON Schema Generator', () => {
                         },
                         "posts": {
                             "type": "array",
+                            "minItems": 1,
                             "items": {
                                 "$ref": "#/definitions/Post"
                             }

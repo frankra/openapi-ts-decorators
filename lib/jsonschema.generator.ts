@@ -133,7 +133,8 @@ function convertObjectProperties(schema: any, object: MetadataObject, path: stri
                 });
 
                 property = {
-                    type: config.relationType
+                    type: config.relationType,
+                    minItems: config.minItems
                 }
 
                 if (config.relationType === 'array') {

@@ -33,6 +33,7 @@ export interface MetadataObjectProperty {
     required?: boolean,
     minLength?: number,
     maxLength?: number,
+    minItems?: number,
     relationType: MetadataObjectPropertyRelationType
 }
 

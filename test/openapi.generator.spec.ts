@@ -258,6 +258,7 @@ describe('OpenAPI Generator', () => {
                             },
                             "posts": {
                                 "type": "array",
+                                "minItems": 1,
                                 "items": {
                                     "$ref": "#/components/schemas/Post"
                                 }

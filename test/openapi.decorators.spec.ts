@@ -64,6 +64,7 @@ describe('OpenAPI Decorators', () => {
                     "posts": {
                         "key": "posts",
                         "name": "posts",
+                        "minItems": 1,
                         "type": "relation",
                         "relationType": "array"
                     }

@@ -10,6 +10,7 @@ export interface PropertyDecoratorParams {
     required?: boolean,
     minLength?: number,
     maxLength?: number,
+    minItems?: number,
 }
 
 export interface ObjectDecoratorParams {

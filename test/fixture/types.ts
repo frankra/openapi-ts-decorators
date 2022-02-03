@@ -21,7 +21,9 @@ export class UserPayload extends EntityMetadata {
     @OpenAPI.OneToOne(() => PhotoPayload)
     photo?: PhotoPayload
 
-    @OpenAPI.OneToMany(() => PostPayload)
+    @OpenAPI.OneToMany(() => PostPayload, {
+        minItems: 1
+    })
     posts?: PostPayload[]
 
 }
