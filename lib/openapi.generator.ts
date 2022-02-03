@@ -56,14 +56,14 @@ export enum ContentType {
     'TEXT' = 'application/text'
 }
 
-export function buildRequestBody<T>(bodyClass: Function, example?: T): (document: OpenAPIV3Doc) => OpenAPIV3.RequestBodyObject {
+export function buildRequestBody<T>(bodyClass: Function, params: {example?: T, isArray?: boolean} = {}): (document: OpenAPIV3Doc) => OpenAPIV3.RequestBodyObject {
     return (document: OpenAPIV3Doc) => {
         const object = getObjectByClass(bodyClass);
         if (object) {
             maybeAddObjectToSchema(document, object);
             return {
                 description: object.description,
-                content: buildContent(object, { example }),
+                content: buildContent(object, params),
                 required: true
             }
 
@@ -73,14 +73,20 @@ export function buildRequestBody<T>(bodyClass: Function, example?: T): (document
     }
 }
 
-export function buildResponseBody<T>(bodyClass: Function, params: Pick<OpenAPIV3.ResponseObject, 'headers' | 'description' | 'links'> & { example?: T }): (document: OpenAPIV3Doc) => OpenAPIV3.ResponseObject {
+export function buildResponseBody<T>(bodyClass: Function, params: Pick<OpenAPIV3.ResponseObject, 'headers' | 'description' | 'links'> & { example?: T, isArray?: boolean}): (document: OpenAPIV3Doc) => OpenAPIV3.ResponseObject {
     return (document: OpenAPIV3Doc) => {
         const object = getObjectByClass(bodyClass);
         if (object) {
             maybeAddObjectToSchema(document, object);
             return {
-                content: buildContent(object),
-                ...params
+                content: buildContent(object, {
+                    example: params.example,
+                    isArray: params.isArray
+                }),
+                
+                headers: params.headers,
+                description: params.description,
+                links: params.links
             }
 
         } else {
@@ -89,14 +95,33 @@ export function buildResponseBody<T>(bodyClass: Function, params: Pick<OpenAPIV3
     }
 }
 
-function buildContent(object: MetadataObject, extra: { example?: any } = {}): { [media: string]: OpenAPIV3.MediaTypeObject; } {
+function buildContent(object: MetadataObject, params: { example?: any, isArray?: boolean,  } = {}): { [media: string]: OpenAPIV3.MediaTypeObject; } {
+    let content;
+
+    if (params.isArray) {
+        content = {
+            schema: {
+                type: "array",
+                items: {
+                    $ref: `#/components/schemas/${object.name}`
+                }
+            },
+            example: params.example
+        }
+    } else {
+        content = {
+            schema: {
+                type: 'object',
+                $ref: `#/components/schemas/${object.name}`
+            },
+            example: params.example
+        }
+    }
+    
     return {
         //TODO: Make parameterized
-        'application/json': {
-            schema: {
-                '$ref': `#/components/schemas/${object.name}`
-            },
-            ...extra
+        'application/json': <OpenAPIV3.MediaTypeObject>{
+            ...content
         }
     }
 }

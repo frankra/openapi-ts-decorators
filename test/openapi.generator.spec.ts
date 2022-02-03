@@ -15,7 +15,15 @@ describe('OpenAPI Generator', () => {
             paths: {
                 '/api/v1/Users': {
                     post: {
-                        requestBody: buildRequestBody<UserPayload>(UserPayload),
+                        requestBody: buildRequestBody<UserPayload>(UserPayload, {
+                            example: {
+                                id: 123,
+                                createdAt: new Date(`2022-02-03T12:00:00Z`),
+                                name: 'test',
+                                email: 'test@test.com',
+                                createdBy: 1,
+                            }
+                        }),
                         responses: {
                             200: buildResponseBody<UserPayload>(UserPayload, {
                                 description: 'Success'
@@ -54,6 +62,14 @@ describe('OpenAPI Generator', () => {
                                 description: 'Success'
                             })
                         }
+                    },
+                    get: {
+                        responses: {
+                            200: buildResponseBody<PostPayload>(PostPayload, {
+                                description: 'Success',
+                                isArray: true
+                            })
+                        }
                     }
                 }
             }
@@ -73,7 +89,15 @@ describe('OpenAPI Generator', () => {
                             "content": {
                                 "application/json": {
                                     "schema": {
+                                        "type": "object",
                                         "$ref": "#/components/schemas/User"
+                                    },
+                                    "example": {
+                                        "id": 123,
+                                        "createdAt": "2022-02-03T12:00:00.000Z",
+                                        "name": "test",
+                                        "email": "test@test.com",
+                                        "createdBy": 1
                                     }
                                 }
                             },
@@ -84,6 +108,7 @@ describe('OpenAPI Generator', () => {
                                 "content": {
                                     "application/json": {
                                         "schema": {
+                                            "type": "object",
                                             "$ref": "#/components/schemas/User"
                                         }
                                     }
@@ -100,6 +125,7 @@ describe('OpenAPI Generator', () => {
                             "content": {
                                 "application/json": {
                                     "schema": {
+                                        "type": "object",
                                         "$ref": "#/components/schemas/User"
                                     }
                                 }
@@ -111,6 +137,7 @@ describe('OpenAPI Generator', () => {
                                 "content": {
                                     "application/json": {
                                         "schema": {
+                                            "type": "object",
                                             "$ref": "#/components/schemas/User"
                                         }
                                     }
@@ -128,6 +155,7 @@ describe('OpenAPI Generator', () => {
                             "content": {
                                 "application/json": {
                                     "schema": {
+                                        "type": "object",
                                         "$ref": "#/components/schemas/User"
                                     }
                                 }
@@ -139,6 +167,7 @@ describe('OpenAPI Generator', () => {
                                 "content": {
                                     "application/json": {
                                         "schema": {
+                                            "type": "object",
                                             "$ref": "#/components/schemas/User"
                                         }
                                     }
@@ -154,6 +183,7 @@ describe('OpenAPI Generator', () => {
                             "content": {
                                 "application/json": {
                                     "schema": {
+                                        "type": "object",
                                         "$ref": "#/components/schemas/Post"
                                     }
                                 }
@@ -165,7 +195,25 @@ describe('OpenAPI Generator', () => {
                                 "content": {
                                     "application/json": {
                                         "schema": {
+                                            "type": "object",
                                             "$ref": "#/components/schemas/Post"
+                                        }
+                                    }
+                                },
+                                "description": "Success"
+                            }
+                        }
+                    },
+                    "get": {
+                        "responses": {
+                            "200": {
+                                "content": {
+                                    "application/json": {
+                                        "schema": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Post"
+                                            }
                                         }
                                     }
                                 },

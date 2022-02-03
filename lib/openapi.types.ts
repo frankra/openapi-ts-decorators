@@ -4,7 +4,7 @@ import { OpenAPIV3 } from "openapi-types";
 export type PathObjectFactory = (document: OpenAPIV3Doc) => OpenAPIV3.PathItemObject;
 
 export interface CustomOperationObject {
-    requestBody: (document: OpenAPIV3Doc) => OpenAPIV3.RequestBodyObject,
+    requestBody?: (document: OpenAPIV3Doc) => OpenAPIV3.RequestBodyObject,
     responses: CustomResponsesObject
 }
 

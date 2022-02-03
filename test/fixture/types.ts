@@ -19,10 +19,10 @@ export class UserPayload extends EntityMetadata {
     age?: number
 
     @OpenAPI.OneToOne(() => PhotoPayload)
-    photo!: PhotoPayload
+    photo?: PhotoPayload
 
     @OpenAPI.OneToMany(() => PostPayload)
-    posts!: PostPayload[]
+    posts?: PostPayload[]
 
 }
 @OpenAPI.Schema({ name: 'Post', description: 'User Post' })
