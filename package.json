@@ -7,7 +7,7 @@
     "scripts": {
         "test": "mocha test/**/*.spec.js --timeout 30000 --exit",
         "clean": "find lib test -name '*.js' -delete",
-        "tsc": "npm run clean && tsc --watch false",
+        "tsc": "tsc --watch false",
         "postinstall": "npm run tsc"
     },
     "repository": {
