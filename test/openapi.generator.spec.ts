@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { buildRequestBody, buildResponseBody, generateOpenAPISpec } from "../lib/openapi.generator";
-import { PostPayload, UserPayload } from "./fixture/types";
+import { Languages, PostPayload, UserPayload } from "./fixture/types";
 
 describe('OpenAPI Generator', () => {
     it('should generate the openapi spec and replace classes for definitions', () => {
@@ -18,6 +18,7 @@ describe('OpenAPI Generator', () => {
                         requestBody: buildRequestBody<UserPayload>(UserPayload, {
                             example: {
                                 id: 123,
+                                language: Languages.EN,
                                 createdAt: new Date(`2022-02-03T12:00:00Z`),
                                 name: 'test',
                                 email: 'test@test.com',
@@ -94,6 +95,7 @@ describe('OpenAPI Generator', () => {
                                     },
                                     "example": {
                                         "id": 123,
+                                        "language": "en",
                                         "createdAt": "2022-02-03T12:00:00.000Z",
                                         "name": "test",
                                         "email": "test@test.com",
@@ -250,7 +252,19 @@ describe('OpenAPI Generator', () => {
                             },
                             "age": {
                                 "type": "number",
-                                "format": "int32"
+                                "format": "int32",
+                                "minimum": 18,
+                                "maximum": 100
+                            },
+                            "language": {
+                                "type": "string",
+                                "enum": [
+                                    "de",
+                                    "en",
+                                    "pt",
+                                    "es",
+                                    "pl"
+                                ]
                             },
                             "photo": {
                                 "type": "object",

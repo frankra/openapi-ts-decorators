@@ -52,8 +52,15 @@ describe('OpenAPI Decorators', () => {
                     "age": {
                         "key": "age",
                         "name": "age",
+                        "minimum": 18,
+                        "maximum": 100,
                         "format": "int32",
                         "type": "number"
+                    },
+                    "language": {
+                        "key": "language",
+                        "name": "language",
+                        "type": "string"
                     },
                     "photo": {
                         "key": "photo",

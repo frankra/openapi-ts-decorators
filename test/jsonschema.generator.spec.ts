@@ -27,14 +27,26 @@ describe('JSON Schema Generator', () => {
                         "name": {
                             "type": "string",
                             "minLength": 10,
-                            "maxLength": 100,
+                            "maxLength": 100
                         },
                         "email": {
                             "type": "string"
                         },
                         "age": {
                             "type": "number",
-                            "format": "int32"
+                            "format": "int32",
+                            "minimum": 18,
+                            "maximum": 100
+                        },
+                        "language": {
+                            "type": "string",
+                            "enum": [
+                                "de",
+                                "en",
+                                "pt",
+                                "es",
+                                "pl"
+                            ]
                         },
                         "photo": {
                             "type": "object",

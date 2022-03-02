@@ -1,5 +1,12 @@
-import { OpenAPI } from "../../lib/openapi.decorators"
+import { OpenAPI } from "../../lib/openapi.decorators";
 
+export enum Languages {
+    DE = 'de',
+    EN = 'en',
+    PT = 'pt',
+    ES = 'es',
+    PL = 'pl'
+}
 
 export class EntityMetadata {
     @OpenAPI.DateTime()
@@ -15,8 +22,11 @@ export class UserPayload extends EntityMetadata {
     name!: string
     @OpenAPI.String({ required: true })
     email!: string
-    @OpenAPI.Int32()
+    @OpenAPI.Int32({ minimum: 18, maximum: 100 })
     age?: number
+
+    @OpenAPI.String({ enum: (type) => Languages })
+    language!: Languages;
 
     @OpenAPI.OneToOne(() => PhotoPayload)
     photo?: PhotoPayload

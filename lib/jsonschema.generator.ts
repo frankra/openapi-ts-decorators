@@ -1,5 +1,5 @@
 
-import { getMetadata, getObjectByClass, MetadataObject, MetadataObjectProperty } from "./metadata";
+import { getMetadata, getObjectByClass, MetadataObject, MetadataObjectProperty, MetadataObjectPropertyRelationType, MetadataObjectPropertyType } from "./metadata";
 
 const PATH_SPLITTER = '/';
 
@@ -33,7 +33,7 @@ function getObjectAtPath(schema: any, path: string, objectName: string): any {
     }
 }
 
-function findNodeDeep(currentNode: any, currentPath: string, nextPath: string): any{
+function findNodeDeep(currentNode: any, currentPath: string, nextPath: string): any {
     if (!currentNode || !currentPath) {
         return null;
     } else if (nextPath) {
@@ -112,55 +112,89 @@ function addInheritedProperties(schema: any, props: PropertyMapAndRequiredArray,
 
 type PropertyMapAndRequiredArray = { properties: any, required: string[] };
 
+function buildRelationProperty(schema: any, config: MetadataObjectProperty, path: string) {
+    let types = config.targetRelation!();
+    types = Array.isArray(types) ? types : [types];
+
+    const references = types.map((type: Function) => {
+        const object = getObjectByClass(type)
+        maybeAddObjectToSchema(schema, object, path)
+        return {
+            $ref: `#/${path}/${object.name}`
+        }
+    });
+
+    const property: any = {
+        type: config.relationType,
+        minItems: config.minItems
+    }
+
+    if (config.relationType === MetadataObjectPropertyRelationType.ARRAY) {
+        property.items = references.pop();
+    } else {
+        property.$ref = references.pop()!.$ref;
+    }
+    return property;
+}
+
+function buildPropertyByType(schema: any, config: MetadataObjectProperty, path: string) {
+    switch (config.type) {
+        case MetadataObjectPropertyType.RELATION:
+            return buildRelationProperty(schema, config, path);
+        case MetadataObjectPropertyType.STRING:
+            return {
+                description: config.description,
+                type: config.type,
+                format: config.format,
+                minLength: config.minLength,
+                maxLength: config.maxLength,
+                enum: parseEnum(config.enum),
+            }
+        case MetadataObjectPropertyType.BOOLEAN:
+            return {
+                description: config.description,
+                type: config.type
+            }
+        case MetadataObjectPropertyType.NUMBER:
+            return {
+                description: config.description,
+                type: config.type,
+                format: config.format,
+                minimum: config.minimum,
+                maximum: config.maximum,
+            }
+    }
+}
+
+function parseEnum(enumerator: string[] | Function| undefined): string[] | undefined{
+    if (typeof enumerator === 'function') {
+        const obj = enumerator();
+
+        return Object.values(obj);
+    } else {
+        return enumerator;
+    }
+}
+
 function convertObjectProperties(schema: any, object: MetadataObject, path: string): PropertyMapAndRequiredArray {
     const properties = object.properties;
     if (properties) {
         const required: string[] = [];
 
-        const mappedProps = Object.keys(properties).reduce((props: any, key: string) => {
-            const config: MetadataObjectProperty = properties[key];
-            let property: any;
-            if (config.type === 'relation') {
-                let types = config.targetRelation!();
-                types = Array.isArray(types) ? types : [types];
+        const mappedProps = Object.keys(properties)
+            .reduce((props: any, key: string) => {
+                const config: MetadataObjectProperty = properties[key];
+                const property: any = buildPropertyByType(schema, config, path)
 
-                const references = types.map((type: Function) => {
-                    const object = getObjectByClass(type)
-                    maybeAddObjectToSchema(schema, object, path)
-                    return {
-                        $ref: `#/${path}/${object.name}`
-                    }
-                });
+                props[key] = property;
 
-                property = {
-                    type: config.relationType,
-                    minItems: config.minItems
+                // Add required field
+                if (config.required) {
+                    required.push(key);
                 }
 
-                if (config.relationType === 'array') {
-                    property.items = references.pop();
-                } else {
-                    property.$ref = references.pop()!.$ref;
-                }
-
-            } else {
-                property = {
-                    description: config.description,
-                    type: config.type,
-                    format: config.format,
-                    minLength: config.minLength,
-                    maxLength: config.maxLength
-                }
-            }
-
-            props[key] = property;
-            if (config.required) {
-                required.push(key);
-            }
-
-            return props;
-        }, {})
-
+                return props;
+            }, {})
 
         return {
             properties: mappedProps,

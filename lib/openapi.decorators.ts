@@ -1,5 +1,4 @@
-import { Func } from "mocha";
-import { mapObject, mapProperty, MetadataObjectType } from "./metadata";
+import { mapObject, mapProperty, MetadataObjectPropertyRelationType, MetadataObjectPropertyType, MetadataObjectType } from "./metadata";
 
 export type ClassDecorator = (constructor: Function) => void
 export type PropertyDecorator = (target: any, propertyKey: string, descriptor: PropertyDescriptor) => any
@@ -7,9 +6,21 @@ export type PropertyDecorator = (target: any, propertyKey: string, descriptor: P
 
 export interface PropertyDecoratorParams {
     description?: string,
-    required?: boolean,
+    required?: boolean
+}
+
+export interface StringPropertyDecoratorParams extends PropertyDecoratorParams {
     minLength?: number,
     maxLength?: number,
+    enum?: string[] | ((ref: any) => object)
+}
+
+export interface NumberPropertyDecoratorParams extends PropertyDecoratorParams {
+    minimum?: number,
+    maximum?: number,
+}
+
+export interface RelationPropertyDecoratorParams extends PropertyDecoratorParams {
     minItems?: number,
 }
 
@@ -18,53 +29,54 @@ export interface ObjectDecoratorParams {
     description?: string,
 }
 
+
 export module OpenAPI {
     // Number formats
-    export function Int32(params: PropertyDecoratorParams = {}): Function {
-        return getMapPropertyAnnotation('number', 'int32', params);
+    export function Int32(params: NumberPropertyDecoratorParams = {}): Function {
+        return getMapPropertyAnnotation(MetadataObjectPropertyType.NUMBER, 'int32', params);
     }
-    export function Int64(params: PropertyDecoratorParams = {}): Function {
-        return getMapPropertyAnnotation('number', 'int64', params);
+    export function Int64(params: NumberPropertyDecoratorParams = {}): Function {
+        return getMapPropertyAnnotation(MetadataObjectPropertyType.NUMBER, 'int64', params);
     }
-    export function Float(params: PropertyDecoratorParams = {}): Function {
-        return getMapPropertyAnnotation('number', 'float', params);
+    export function Float(params: NumberPropertyDecoratorParams = {}): Function {
+        return getMapPropertyAnnotation(MetadataObjectPropertyType.NUMBER, 'float', params);
     }
-    export function Double(params: PropertyDecoratorParams = {}): Function {
-        return getMapPropertyAnnotation('number', 'double', params);
+    export function Double(params: NumberPropertyDecoratorParams = {}): Function {
+        return getMapPropertyAnnotation(MetadataObjectPropertyType.NUMBER, 'double', params);
     }
     // String format
-    export function String(params: PropertyDecoratorParams = {}): Function {
-        return getMapPropertyAnnotation('string', undefined, params);
+    export function String(params: StringPropertyDecoratorParams = {}): Function {
+        return getMapPropertyAnnotation(MetadataObjectPropertyType.STRING, undefined, params);
+    }
+    export function Password(params: StringPropertyDecoratorParams = {}): Function {
+        return getMapPropertyAnnotation(MetadataObjectPropertyType.STRING, 'password', params);
     }
     // Raw formats
-    export function Byte(params: PropertyDecoratorParams = {}): Function {
-        return getMapPropertyAnnotation('string', 'byte', params);
+    export function Byte(params: StringPropertyDecoratorParams = {}): Function {
+        return getMapPropertyAnnotation(MetadataObjectPropertyType.STRING, 'byte', params);
     }
-    export function Binary(params: PropertyDecoratorParams = {}): Function {
-        return getMapPropertyAnnotation('string', 'binary', params);
+    export function Binary(params: StringPropertyDecoratorParams = {}): Function {
+        return getMapPropertyAnnotation(MetadataObjectPropertyType.STRING, 'binary', params);
     }
     // Boolean format
     export function Boolean(params: PropertyDecoratorParams = {}): Function {
-        return getMapPropertyAnnotation('boolean', undefined, params);
+        return getMapPropertyAnnotation(MetadataObjectPropertyType.BOOLEAN, undefined, params);
     }
     // Date formats
-    export function Date(params: PropertyDecoratorParams = {}): Function {
-        return getMapPropertyAnnotation('string', 'date', params);
+    export function Date(params: StringPropertyDecoratorParams = {}): Function {
+        return getMapPropertyAnnotation(MetadataObjectPropertyType.STRING, 'date', params);
     }
-    export function DateTime(params: PropertyDecoratorParams = {}): Function {
-        return getMapPropertyAnnotation('string', 'date-time', params);
-    }
-    export function Password(params: PropertyDecoratorParams = {}): Function {
-        return getMapPropertyAnnotation('string', 'password', params);
+    export function DateTime(params: StringPropertyDecoratorParams = {}): Function {
+        return getMapPropertyAnnotation(MetadataObjectPropertyType.STRING, 'date-time', params);
     }
 
     // Relations
-    export function OneToOne(relationTo: (ref: any) => Function, params: PropertyDecoratorParams = {}): Function {
-        return getMapPropertyRelation('object', relationTo, params);
+    export function OneToOne(relationTo: (ref: any) => Function, params: RelationPropertyDecoratorParams = {}): Function {
+        return getMapPropertyRelation(MetadataObjectPropertyRelationType.OBJECT, relationTo, params);
     }
 
-    export function OneToMany(relationTo: (ref: any) => Function, params: PropertyDecoratorParams = {}): Function {
-        return getMapPropertyRelation('array', relationTo, params);
+    export function OneToMany(relationTo: (ref: any) => Function, params: RelationPropertyDecoratorParams = {}): Function {
+        return getMapPropertyRelation(MetadataObjectPropertyRelationType.ARRAY, relationTo, params);
     }
 
     // Not Supported Yet
@@ -84,7 +96,7 @@ export module OpenAPI {
         return (target: Function, propertyKey: string, descriptor: PropertyDescriptor) => {
             mapProperty(target.constructor, propertyKey, {
                 ...params,
-                type: 'relation',
+                type: MetadataObjectPropertyType.RELATION,
                 relationType,
                 targetRelation
             });

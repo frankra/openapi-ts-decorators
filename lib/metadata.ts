@@ -31,10 +31,14 @@ export interface MetadataObjectProperty {
     format?: string,
     targetRelation?: () => Function | Function[],
     required?: boolean,
+    relationType: MetadataObjectPropertyRelationType,
+    //JSON Schema validation params
     minLength?: number,
     maxLength?: number,
     minItems?: number,
-    relationType: MetadataObjectPropertyRelationType
+    minimum?: number,
+    maximum?: number,
+    enum?: string[] | Function,
 }
 
 export interface Metadata {
