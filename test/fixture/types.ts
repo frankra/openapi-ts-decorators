@@ -8,6 +8,12 @@ export enum Languages {
     PL = 'pl'
 }
 
+export enum Role {
+    DEVELOPER = 10,
+    PROJECT_OWNER = 20,
+    QA_ENGINEER = 30
+}
+
 export class EntityMetadata {
     @OpenAPI.DateTime()
     createdAt!: Date;
@@ -24,6 +30,9 @@ export class UserPayload extends EntityMetadata {
     email!: string
     @OpenAPI.Int32({ minimum: 18, maximum: 100 })
     age?: number
+
+    @OpenAPI.Int32({ enum: (t) => Role })
+    role?: number
 
     @OpenAPI.String({ enum: (type) => Languages })
     language!: Languages;

@@ -38,6 +38,15 @@ describe('JSON Schema Generator', () => {
                             "minimum": 18,
                             "maximum": 100
                         },
+                        "role": {
+                            "type": "number",
+                            "format": "int32",
+                            "enum": [
+                                10,
+                                20,
+                                30
+                            ]
+                        },
                         "language": {
                             "type": "string",
                             "enum": [

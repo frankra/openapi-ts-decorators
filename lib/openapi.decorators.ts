@@ -18,6 +18,7 @@ export interface StringPropertyDecoratorParams extends PropertyDecoratorParams {
 export interface NumberPropertyDecoratorParams extends PropertyDecoratorParams {
     minimum?: number,
     maximum?: number,
+    enum?: number[] | ((ref: any) => object)
 }
 
 export interface RelationPropertyDecoratorParams extends PropertyDecoratorParams {
