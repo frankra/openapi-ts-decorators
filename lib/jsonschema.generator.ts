@@ -162,15 +162,20 @@ function buildPropertyByType(schema: any, config: MetadataObjectProperty, path: 
                 format: config.format,
                 minimum: config.minimum,
                 maximum: config.maximum,
+                enum: parseEnum(config.enum)
             }
     }
 }
 
-function parseEnum(enumerator: string[] | Function| undefined): string[] | undefined{
+
+function parseEnum(enumerator: string[] | Function | undefined): string[] | undefined {
     if (typeof enumerator === 'function') {
         const obj = enumerator();
 
-        return Object.values(obj);
+        return Object.keys(obj)
+            // Get all non-numeric keys
+            .filter(key => isNaN(parseInt(key)))
+            .map(nonNumericKey => obj[nonNumericKey]);
     } else {
         return enumerator;
     }

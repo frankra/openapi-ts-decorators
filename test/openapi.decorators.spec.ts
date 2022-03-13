@@ -57,6 +57,12 @@ describe('OpenAPI Decorators', () => {
                         "format": "int32",
                         "type": "number"
                     },
+                    "role": {
+                        "key": "role",
+                        "name": "role",
+                        "format": "int32",
+                        "type": "number"
+                    },
                     "language": {
                         "key": "language",
                         "name": "language",
