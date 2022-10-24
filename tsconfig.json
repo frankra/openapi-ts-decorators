@@ -20,7 +20,7 @@
         "sourceMap": true,
         "watch": false,
         "downlevelIteration": true,
-        "strict": true
+        "strict": false
     },
     "exclude": [
         "node_modules"
